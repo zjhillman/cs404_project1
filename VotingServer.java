@@ -1,4 +1,5 @@
 import java.net.*;
+import java.io.*;
 
 public class VotingServer {
     public static void main(String args[]) {
@@ -9,11 +10,38 @@ public class VotingServer {
         
         try {
             int yesCount, noCount, dontCareCount;
+            PrintStream stdOut = System.out;
 
             //establish server
             ServerSocket server = new ServerSocket(port);
             System.out.println("Established server at "+InetAddress.getLocalHost().toString());
 
+            while(!false) {
+                // accept connection
+                Socket socket = server.accept();
+
+                // set input stream
+                InputStream inStream = socket.getInputStream();
+                BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+
+                // set output stream
+                OutputStream outStream = socket.getOutputStream();
+                PrintWriter output = new PrintWriter(new OutputStreamWriter(outStream));
+
+                // convert message to String
+                String message = input.readLine();
+                stdOut.println(message);
+
+                // echo message to client
+                output.print("I heard "+message);
+
+                // finish
+                input.close();
+                output.close();
+                break;
+            }
+
+            System.out.println("Goodbye!");
             server.close();
         } catch (Exception e) {
             e.printStackTrace();
