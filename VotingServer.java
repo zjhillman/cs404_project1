@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 
 public class VotingServer {
-    public static void main(String args[]) {
+    public static void main (String args[]) {
         int port = 12320;
 
         if (args.length == 1)
@@ -10,7 +10,6 @@ public class VotingServer {
         
         try {
             int yesCount, noCount, dontCareCount;
-            PrintStream stdOut = System.out;
 
             //establish server
             ServerSocket server = new ServerSocket(port);
@@ -29,8 +28,9 @@ public class VotingServer {
                 PrintWriter output = new PrintWriter(new OutputStreamWriter(outStream));
 
                 // convert message to String
-                String message = input.readLine();
-                stdOut.println(message);
+                String message = "";
+                message = input.readLine();
+                System.out.println(message);
 
                 // echo message to client
                 output.print("I heard "+message);
@@ -38,7 +38,9 @@ public class VotingServer {
                 // finish
                 input.close();
                 output.close();
-                break;
+                socket.close();
+                if (message.equalsIgnoreCase("exit"))
+                    break;
             }
 
             System.out.println("Goodbye!");
