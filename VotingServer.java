@@ -15,10 +15,11 @@ public class VotingServer {
             ServerSocket server = new ServerSocket(port);
             System.out.println("Established server at "+InetAddress.getLocalHost().toString());
 
-            while(!false) {
-                // accept connection
-                Socket socket = server.accept();
+            // accept connection
+            Socket socket = server.accept();
+            System.out.println("Connection established.");
 
+            while(true) {
                 // set input stream
                 InputStream inStream = socket.getInputStream();
                 BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
@@ -30,18 +31,20 @@ public class VotingServer {
                 // convert message to String
                 String message = "";
                 message = input.readLine();
-                System.out.println(message);
+                System.out.println("I heard '"+message +"'\n");
+
+                if (message.equalsIgnoreCase("exit")) {
+                    // finish
+                    input.close();
+                    output.close();
+                    socket.close();
+                    break;
+                }
 
                 // echo message to client
-                output.print("I heard "+message);
-
-                // finish
-                input.close();
-                output.close();
-                socket.close();
-                if (message.equalsIgnoreCase("exit"))
-                    break;
-            }
+                output.print(message +"\n");
+                output.flush();
+            } // end while
 
             System.out.println("Goodbye!");
             server.close();

@@ -26,26 +26,38 @@ public class VotingClient {
             socket = new Socket(hostName, hostPort);
             System.out.println("Established connection to "+socket.getInetAddress().toString());
 
-            // set output stream 
-            outStream = socket.getOutputStream();
-            PrintWriter output = new PrintWriter(new OutputStreamWriter(outStream));
+            while (true) {
+                // set output stream 
+                outStream = socket.getOutputStream();
+                PrintWriter output = new PrintWriter(new OutputStreamWriter(outStream));
 
-            // set input stream
-            inStream = socket.getInputStream();
-            BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+                // set input stream
+                inStream = socket.getInputStream();
+                BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+                if (input.ready())
+                    System.out.println("input ready");
 
-            output.print("hello");
+                // set user input
+                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
-            // set user input
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-            
-            // send a message
-            System.out.print("Please enter a message for the server: ");
-            String message = userInput.readLine();
+                // send a message
+                System.out.print("Please enter a message for the server: ");
+                String message = userInput.readLine();;
+                output.print(message + "\n");
+                output.flush();
 
+                if (message.equalsIgnoreCase("exit")) {
+                    output.close();
+                    input.close();
+                    break;
+                }
 
-            output.close();
-            input.close();
+                // wait for response
+                String response = "";
+                response = input.readLine();
+                System.out.println(response + "\n");
+            } // end while
+
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
