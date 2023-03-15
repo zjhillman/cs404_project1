@@ -25,16 +25,16 @@ public class VotingThread implements Runnable{
                     clientInput.close();
                     clientOutput.close();
                     socket.close();
+                    System.out.println("client disconnected.\n");
+                    break;
                 }
 
                 // echo message to client
                 clientOutput.print(message +"\n");
                 clientOutput.flush();
             } // end while
-                
         } catch (Exception e) {
             e.printStackTrace();
         } // end try/catch
-        
     } // end run
 } // end class
