@@ -13,7 +13,8 @@ public class VotingClient {
 
     private static void shutdown() {
         try {
-
+            outputToServer.close();
+            inputFromServer.close();
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,18 +68,22 @@ public class VotingClient {
             // continously wait for a message and send a response
             while (true) {
                 // wait for message
-                String serverMessage = "";
+                System.out.println("Waiting for response...\n");
+                String serverMessage;
                 while ((serverMessage = inputFromServer.readLine()) != null && !serverMessage.equals("")) {
                     System.out.println(serverMessage);
                 }
 
                 // get response from user
-                String response = "";
-                response = inputFromUser.readLine();
+                String response = inputFromUser.readLine();
                 System.out.println("entered "+response);
-                while ((!isNumeric(response)) || response.equals(exitCmd)) {
-                    System.out.print("Invalid option, enter one of the options above: ");
+                while ((!isNumeric(response)) && !response.equals(exitCmd)) {
+                    System.out.print("Invalid option, enter a number: ");
                     response = inputFromUser.readLine();
+                }
+                if (response.equals(exitCmd)) {
+                    shutdown();
+                    return;
                 }
 
                 // send response to server

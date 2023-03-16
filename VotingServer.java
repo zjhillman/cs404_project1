@@ -14,7 +14,7 @@ public class VotingServer {
 
             //establish server
             ServerSocket server = new ServerSocket(port);
-            server.setSoTimeout(1800000); // 30 minutes or 1,800,000 milliseconds
+            //server.setSoTimeout(1800000); // 30 minutes or 1,800,000 milliseconds
             System.out.println("Established server at "+InetAddress.getLocalHost().toString());
 
             while (acceptingRequests) {
