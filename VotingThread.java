@@ -20,14 +20,14 @@ public class VotingThread implements Runnable{
         String welcome3 = "Would you like to cast a vote?\n";
         String option1 = "[1] I would like to cast a vote\n";
         String option2 = "[2] I do not wish to vote today\n";
-        String greeting = welcome0 + welcome1 + welcome2 + welcome3 + option1 + option2 + "\n";
+        String greeting = welcome0 + welcome1 + welcome2 + welcome3 + option1 + option2;
         List<String> options = new ArrayList<String>();
         options.add("1");
         options.add("2");
         options.add(".");
 
         // send greeting
-        outputToClient.print(greeting + " \n");
+        outputToClient.print(greeting + "\n");
         outputToClient.flush();
 
         // get response
@@ -36,7 +36,9 @@ public class VotingThread implements Runnable{
             System.out.println("I heard " + response);
 
             while (!options.contains(response)) {
-                outputToClient.print("Invalid response, your options are\n" + option1 + option2 + " \n");
+                String error = "Invalid response, your options are\n" + option1 + option2;
+                outputToClient.print(error + "\n");
+                outputToClient.flush();
 
                 response = inputFromClient.readLine();
                 System.out.println("I heard '" + response + "'");
@@ -59,7 +61,7 @@ public class VotingThread implements Runnable{
         String option1 = "[1] Yes\n";
         String option2 = "[2] No\n";
         String option3 = "[3] Don't Care\n";
-        String poll = header + title + option1 + option2 + option3 + "\n";
+        String poll = header + title + option1 + option2 + option3;
         List<String> options = new ArrayList<String>();
         options.add("1");
         options.add("2");
@@ -67,7 +69,7 @@ public class VotingThread implements Runnable{
         options.add(".");
 
         // send poll
-        outputToClient.print(poll + " \n");
+        outputToClient.print(poll + "\n");
         outputToClient.flush();
 
         // get response
@@ -76,7 +78,8 @@ public class VotingThread implements Runnable{
             System.out.println("I heard " + response);
 
             while (!options.contains(response)) {
-                outputToClient.print("Invalid response, your options are\n" + option1 + option2 + " \n");
+                outputToClient.print("Invalid response, your options are\n" + option1 + option2 + "\n");
+                outputToClient.flush();
 
                 response = inputFromClient.readLine();
             }
@@ -98,7 +101,7 @@ public class VotingThread implements Runnable{
         String option2 = "[2] See 'No' results\n";
         String option3 = "[3] See 'Don't Care' results\n";
         String option4 = "[.] Exit\n";
-        String posty = header + option1 + option2 + option3 + option4 + "\n";
+        String posty = header + option1 + option2 + option3 + option4;
         List<String> options = new ArrayList<String>();
         options.add("1");
         options.add("2");
@@ -106,7 +109,7 @@ public class VotingThread implements Runnable{
         options.add(".");
 
         // send instructions
-        outputToClient.print(posty + " \n");
+        outputToClient.print(posty + "\n");
         outputToClient.flush();
 
         // get response
@@ -115,7 +118,8 @@ public class VotingThread implements Runnable{
             System.out.println("I heard " + response);
 
             while (!options.contains(response)) {
-                outputToClient.print("Invalid response, your options are\n" + option1 + option2 + " \n");
+                outputToClient.print("Invalid response, your options are\n" + option1 + option2 + "\n");
+                outputToClient.flush();
 
                 response = inputFromClient.readLine();
             }

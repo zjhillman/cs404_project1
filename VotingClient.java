@@ -81,14 +81,15 @@ public class VotingClient {
                     System.out.print("Invalid option, enter a number: ");
                     response = inputFromUser.readLine();
                 }
+                
+                // send response to server
+                outputToServer.print(response + "\n");
+                outputToServer.flush();
+                
                 if (response.equals(exitCmd)) {
                     shutdown();
                     return;
                 }
-
-                // send response to server
-                outputToServer.print(response + "\n");
-                outputToServer.flush();
             } // end while
         } catch (Exception e) {
             e.printStackTrace();
