@@ -13,7 +13,7 @@ public class VotingThread implements Runnable{
     String welcome3 = "Would you like to cast a vote?\n";
     String welcome4 = "[1] I would like to cast a vote\n";
     String welcome5 = "[2] I do not wish to vote today\n";
-    String greeting = welcome0 + welcome1 + welcome2 + welcome3 + welcome4 + welcome5 +"\n";
+    String greeting = welcome0 + welcome1 + welcome2 + welcome3 + welcome4 + welcome5 + "\n";
 
     String option0 = "[1] Yes\n";
     String option1 = "[2] No\n";
@@ -40,6 +40,27 @@ public class VotingThread implements Runnable{
         try {
             // send greeting
             outputToClient.print(greeting + "\n");
+            outputToClient.flush();
+
+            // wait for response
+            String msg = inputFromClient.readLine();
+            System.out.println("[client][greeting_response] " + msg);
+
+            switch (Integer.parseInt(msg)) {
+                case 1:
+                    System.out.println("yes vote");
+                    break;
+                case 2:
+                    System.out.println("no vote");
+                    break; 
+                default:
+                    System.out.println("Invalid option");
+                    return;
+            }
+            
+
+            
+
             while (true) {
 
                 // convert message to String
@@ -47,7 +68,7 @@ public class VotingThread implements Runnable{
                 message = inputFromClient.readLine();
 
                 // exit if client says it exits
-                if (message.equalsIgnoreCase("exit")) {
+                if (message.equalsIgnoreCase(".")) {
                     // finish
                     inputFromClient.close();
                     outputToClient.close();
