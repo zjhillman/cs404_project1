@@ -64,27 +64,26 @@ public class VotingClient {
             // set user input
             inputFromUser = new BufferedReader(new InputStreamReader(System.in));
 
-            // get message from server
-            String line = "";
-            while ((line = inputFromServer.readLine()) != null && line.equals("")) {
-                System.out.println(line);
-            }
-
-            // get user input
-            String userInput = "";
-            userInput = inputFromUser.readLine();
-            System.out.println("entered "+userInput);
-            while (!isNumeric(userInput)) {
-                System.out.print("Invalid option, enter one of the options above");
-                userInput = inputFromUser.readLine();
-            }
-
-            // send message to server
-            outputToServer.print(userInput + "\n");
-            outputToServer.flush();
-
+            // continously wait for a message and send a response
             while (true) {
-                
+                // wait for message
+                String serverMessage = "";
+                while ((serverMessage = inputFromServer.readLine()) != null && !serverMessage.equals("")) {
+                    System.out.println(serverMessage);
+                }
+
+                // get response from user
+                String response = "";
+                response = inputFromUser.readLine();
+                System.out.println("entered "+response);
+                while ((!isNumeric(response)) || response.equals(exitCmd)) {
+                    System.out.print("Invalid option, enter one of the options above: ");
+                    response = inputFromUser.readLine();
+                }
+
+                // send response to server
+                outputToServer.print(response + "\n");
+                outputToServer.flush();
             } // end while
         } catch (Exception e) {
             e.printStackTrace();
