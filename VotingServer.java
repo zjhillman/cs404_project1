@@ -4,6 +4,7 @@ import java.io.*;
 public class VotingServer {
     public static void main (String args[]) {
         int port = 12320;
+        boolean acceptingRequests = true;
 
         if (args.length == 1)
             port = Integer.parseInt(args[0]);
@@ -13,13 +14,13 @@ public class VotingServer {
 
             //establish server
             ServerSocket server = new ServerSocket(port);
-            server.setSoTimeout(60000); // 60 seconds
+            server.setSoTimeout(1800000); // 30 minutes or 1,800,000 milliseconds
             System.out.println("Established server at "+InetAddress.getLocalHost().toString());
 
-            while (true) {
+            while (acceptingRequests) {
                 // accept connection
                 Socket socket = server.accept();
-                System.out.println("Connection established.");
+                System.out.println("Connection established at "+socket.getInetAddress().toString()+"\n");
 
                 // set input stream
                 InputStream inStream = socket.getInputStream();
@@ -35,8 +36,10 @@ public class VotingServer {
                 
             } // end while
 
-            //System.out.println("Goodbye!");
-            //server.close();
+            System.out.println("Goodbye!");
+            server.close();
+        } catch (SocketException e) {
+            System.out.println("30 minutes have elapsed, voting has ended."); 
         } catch (Exception e) {
             e.printStackTrace();
         }

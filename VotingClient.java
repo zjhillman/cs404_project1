@@ -34,8 +34,6 @@ public class VotingClient {
                 // set input stream
                 inStream = socket.getInputStream();
                 BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-                if (input.ready())
-                    System.out.println("input ready");
 
                 // set user input
                 BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
@@ -46,12 +44,12 @@ public class VotingClient {
                 output.print(message + "\n");
                 output.flush();
 
+                // exit command
                 if (message.equalsIgnoreCase("exit")) {
                     output.close();
                     input.close();
                     break;
                 }
-
                 // wait for response
                 String response = "";
                 response = input.readLine();
