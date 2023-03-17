@@ -135,6 +135,22 @@ public class VotingThread implements Runnable{
         }
     }
 
+    public void printResult(int result) {
+        String message = "votes:" + String.valueOf(result) + "\n";
+        message += "Press Enter to continue\n";
+
+        // send message
+        outputToClient.print(message + "\n");
+        outputToClient.flush();
+
+        // wait for response, throw away response
+        try {
+            inputFromClient.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void run() {
         try {
             int choice;
@@ -156,6 +172,23 @@ public class VotingThread implements Runnable{
                     System.out.println("client entered an invalid option");
                     return;
             }
+
+            switch (choice) {
+                case 0:
+                    System.out.println("client disconnected");
+                    break;
+                case 1:
+                    VotingServer.castYesVote();
+                    break;
+                case 2:
+                    VotingServer.castNoVote();
+                    break;
+                case 3:
+                    VotingServer.castDontCareVote();
+                    break;
+                default:
+                    break;
+            }
             
             while (true) {
                 choice = results();
@@ -165,13 +198,13 @@ public class VotingThread implements Runnable{
                         System.out.println("client disconnected");
                         return;
                     case 1:
-                        System.out.println("client requests to view yes votes");
+                        printResult(VotingServer.getYesCount());
                         break;
                     case 2:
-                        System.out.println("client requests to view no votes");
+                        printResult(VotingServer.getNoCount());
                         break;
                     case 3:
-                        System.out.println("client requests to view don't care votes");
+                        printResult(VotingServer.getDontCareCount());
                         break;
                     default:
                         System.out.println("client entered an invalid option");

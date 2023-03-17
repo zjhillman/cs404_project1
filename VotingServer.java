@@ -2,6 +2,34 @@ import java.net.*;
 import java.io.*;
 
 public class VotingServer {
+    private static int yesCount = 0,
+                       noCount = 0,
+                       dontCareCount = 0;
+
+    public static synchronized void castYesVote () {
+        ++yesCount;
+    }
+
+    public static synchronized void castNoVote () {
+        ++noCount;
+    }
+
+    public static synchronized void castDontCareVote () {
+        ++dontCareCount;
+    }
+
+    public static int getYesCount () {
+        return yesCount;
+    }
+
+    public static int getNoCount () {
+        return noCount;
+    }
+
+    public static int getDontCareCount () {
+        return dontCareCount;
+    }
+
     public static void main (String args[]) {
         int port = 12320;
         boolean acceptingRequests = true;
@@ -10,8 +38,6 @@ public class VotingServer {
             port = Integer.parseInt(args[0]);
         
         try {
-            int yesCount, noCount, dontCareCount;
-
             //establish server
             ServerSocket server = new ServerSocket(port);
             //server.setSoTimeout(1800000); // 30 minutes or 1,800,000 milliseconds
