@@ -6,6 +6,7 @@ public class VotingThread implements Runnable{
     Socket socket;
     BufferedReader inputFromClient;
     PrintWriter outputToClient;
+    boolean running;
 
     VotingThread(Socket socket, BufferedReader br, PrintWriter pw) {
         this.socket = socket;
@@ -13,7 +14,7 @@ public class VotingThread implements Runnable{
         this.outputToClient = pw;
     }
 
-    public int greet() {
+    public void greet() {
         String welcome0 = "Welcome [user],\n";
         String welcome1 = "Today's topic is\n";
         String welcome2 = "    'Do you believe homework should be abolished?'\n";
@@ -41,21 +42,33 @@ public class VotingThread implements Runnable{
                 outputToClient.flush();
 
                 response = inputFromClient.readLine();
-                System.out.println("I heard '" + response + "'");
             }
 
-            if (response.equals("."))
-                return 0;
-            
+            if (response.equals(".")) {
+                shutdown();
+                return;
+            }
 
-            return Integer.parseInt(response);
+            switch (response) {
+                case "1":
+                    poll();
+                    System.out.println("client participated in the poll");
+                    break;
+                case "2":
+                    System.out.println("client does not wish to vote");
+                    break; 
+                default:
+                    System.out.println("client entered an invalid option");
+                    return;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return;
         }
     }
 
-    public int poll() {
+    public void poll() {
         String header = "Today's topic is\n";
         String title = "    'Do you believe homework should be abolished?'\n";
         String option1 = "[1] Yes\n";
@@ -75,7 +88,6 @@ public class VotingThread implements Runnable{
         // get response
         try {
             String response = inputFromClient.readLine();
-            System.out.println("I heard " + response);
 
             while (!options.contains(response)) {
                 outputToClient.print("Invalid response, your options are\n" + option1 + option2 + "\n");
@@ -84,18 +96,32 @@ public class VotingThread implements Runnable{
                 response = inputFromClient.readLine();
             }
 
-            if (response.equals("."))
-                return 0;
+            if (response.equals(".")) {
+                shutdown();
+                return;
+            }
             
-
-            return Integer.parseInt(response);
+            switch (response) {
+                case "1":
+                    VotingServer.castYesVote();
+                    break;
+                case "2":
+                    VotingServer.castNoVote();
+                    break;
+                case "3":
+                    VotingServer.castDontCareVote();
+                    break;
+                default:
+                    break;
+            }
+            return;
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return;
         }
     }
 
-    public int results() {
+    public void results() {
         String header = "Please choose one of the following:\n";
         String option1 = "[1] See 'Yes' results\n";
         String option2 = "[2] See 'No' results\n";
@@ -115,7 +141,6 @@ public class VotingThread implements Runnable{
         // get response
         try {
             String response = inputFromClient.readLine();
-            System.out.println("I heard " + response);
 
             while (!options.contains(response)) {
                 outputToClient.print("Invalid response, your options are\n" + option1 + option2 + "\n");
@@ -124,14 +149,30 @@ public class VotingThread implements Runnable{
                 response = inputFromClient.readLine();
             }
 
-            if (response.equals("."))
-                return 0;
+            if (response.equals(".")) {
+                shutdown();
+                return;
+            }
+                
             
-
-            return Integer.parseInt(response);
+            switch (response) {
+                case "1":
+                    printResult(VotingServer.getYesCount());
+                    break;
+                case "2":
+                    printResult(VotingServer.getNoCount());
+                    break;
+                case "3":
+                    printResult(VotingServer.getDontCareCount());
+                    break;
+                default:
+                    System.out.println("client entered an invalid option");
+                    return;
+            }
+            return;
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return;
         }
     }
 
@@ -151,65 +192,24 @@ public class VotingThread implements Runnable{
         }
     }
 
+    public void shutdown() {
+        try {
+            inputFromClient.close();
+            outputToClient.close();
+            socket.close();
+            running = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void run() {
         try {
-            int choice;
-            choice = greet();
+            running = true;
+            greet();
 
-            switch (choice) {
-                case 0:
-                    System.out.println("client disconnected");
-                    return;
-                case 1:
-                    choice = poll();
-                    System.out.println("client participated in the poll");
-                    break;
-                case 2:
-                    System.out.println("client does not wish to vote");
-                    break; 
-                default:
-                    choice = -1;
-                    System.out.println("client entered an invalid option");
-                    return;
-            }
-
-            switch (choice) {
-                case 0:
-                    System.out.println("client disconnected");
-                    break;
-                case 1:
-                    VotingServer.castYesVote();
-                    break;
-                case 2:
-                    VotingServer.castNoVote();
-                    break;
-                case 3:
-                    VotingServer.castDontCareVote();
-                    break;
-                default:
-                    break;
-            }
-            
-            while (true) {
-                choice = results();
-
-                switch (choice) {
-                    case 0:
-                        System.out.println("client disconnected");
-                        return;
-                    case 1:
-                        printResult(VotingServer.getYesCount());
-                        break;
-                    case 2:
-                        printResult(VotingServer.getNoCount());
-                        break;
-                    case 3:
-                        printResult(VotingServer.getDontCareCount());
-                        break;
-                    default:
-                        System.out.println("client entered an invalid option");
-                        return;
-                }
+            while (running) {
+                results();
             } // end while
         } catch (Exception e) {
             e.printStackTrace();
