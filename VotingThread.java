@@ -10,7 +10,7 @@ public class VotingThread implements Runnable{
     Socket socket;
     BufferedReader inputFromClient;
     PrintWriter outputToClient;
-    boolean running;
+    boolean running = false;
 
     VotingThread(Socket socket, BufferedReader br, PrintWriter pw) {
         this.socket = socket;
