@@ -4,17 +4,21 @@ import java.io.*;
 public class VotingServer {
     private static int yesCount = 0,
                        noCount = 0,
-                       dontCareCount = 0;
+                       dontCareCount = 0,
+                       totalCount = 0;
 
     public static synchronized void castYesVote () {
+        ++totalCount;
         ++yesCount;
     }
 
     public static synchronized void castNoVote () {
+        ++totalCount;
         ++noCount;
     }
 
     public static synchronized void castDontCareVote () {
+        ++totalCount;
         ++dontCareCount;
     }
 
@@ -28,6 +32,10 @@ public class VotingServer {
 
     public static int getDontCareCount () {
         return dontCareCount;
+    }
+
+    public static synchronized int getTallyCount () {
+        return totalCount;
     }
 
     public static void main (String args[]) {
@@ -56,10 +64,9 @@ public class VotingServer {
                 OutputStream outStream = socket.getOutputStream();
                 PrintWriter clientOut = new PrintWriter(new OutputStreamWriter(outStream));
 
+                // create thread to handle clients
                 Thread thread = new Thread(new VotingThread(socket, clientIn, clientOut));
                 thread.start();
-
-                
             } // end while
 
             System.out.println("Goodbye!");

@@ -9,6 +9,7 @@ public class VotingClient {
     private static PrintWriter outputToServer;
     private static BufferedReader inputFromUser;
     private static String exitCmd = ".";
+    private static final boolean DEBUG = false;
 
 
     private static void shutdown() {
@@ -68,7 +69,7 @@ public class VotingClient {
             // continously wait for a message and send a response
             while (true) {
                 // wait for message
-                System.out.println("Waiting for response...\n");
+                if (DEBUG) System.out.println("Waiting for response...");
                 String serverMessage;
                 while ((serverMessage = inputFromServer.readLine()) != null && !serverMessage.equals("")) {
                     System.out.println(serverMessage);
@@ -76,9 +77,9 @@ public class VotingClient {
 
                 // get response from user
                 String response = inputFromUser.readLine();
-                System.out.println("entered "+response);
-                while ((!isNumeric(response)) && !response.equals(exitCmd)) {
-                    System.out.print("Invalid option, enter a number: ");
+                if (DEBUG) System.out.println("entered '"+response+"'");
+                while (!isNumeric(response) && !response.equals(exitCmd) && !response.equals("")) {
+                    System.out.print("Please type a valid option: ");
                     response = inputFromUser.readLine();
                 }
                 
