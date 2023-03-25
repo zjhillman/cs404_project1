@@ -199,14 +199,17 @@ public class VotingThread implements Runnable{
         String message = voteType;
         message += " votes: " + String.valueOf(result) + "\n";
         message += "[Enter] Return to menu\n";
+        message += "["+EXIT_COMMAND+"] Exit\n";
 
         // send message
         outputToClient.print(message + "\n");
         outputToClient.flush();
 
-        // wait for response, throw away response
+        // wait for response, only respond to shutdown
         try {
-            inputFromClient.readLine();
+            String response = inputFromClient.readLine();
+            if (response.equals(EXIT_COMMAND))
+                shutdown();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
