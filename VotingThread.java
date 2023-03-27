@@ -217,7 +217,7 @@ public class VotingThread implements Runnable{
 
     public void shutdown() {
         try {
-            System.out.println("client has disconnected");
+            System.out.println("client has disconnected\n");
             inputFromClient.close();
             outputToClient.close();
             socket.close();
